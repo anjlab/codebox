@@ -1,0 +1,3242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T17:21:43.5135664" />
+  <contentHeader name="Anjlab Code Box" version="3.5.17.1" modificationDateTime="2025-06-12T17:21:30.0135268" organization="Anjlab" author="Sergey A Glukhov">
+    <Comment>Comprehensive PLC Utility Library for CoDeSys</Comment>
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation>
+          <property name="Author" type="string">Sergey A Glukhov</property>
+          <property name="AutoResolveUnbound" type="boolean">true</property>
+          <property name="Company" type="string">Anjlab</property>
+          <property name="DefaultNamespace" type="string">ACB</property>
+          <property name="Description" type="string">Comprehensive PLC Utility Library for CoDeSys</property>
+          <property name="DocFormat" type="string">reStructuredText</property>
+          <property name="ID" type="string">888cbf53-45a1-47de-9a2a-fbd72e84a196</property>
+          <property name="IsEndUserLibrary" type="boolean">false</property>
+          <property name="LanguageModelAttribute" type="string">qualified-access-only</property>
+          <property name="Placeholder" type="string">AnjlabCodeBox</property>
+          <property name="Project" type="string">AnjLabCodeBox</property>
+          <property name="Released" type="boolean">false</property>
+          <property name="SourceCode" type="string">https://github.com/anjlab/codebox</property>
+          <property name="SourceLibrary" type="boolean">false</property>
+          <property name="Title" type="string">Anjlab Code Box</property>
+          <property name="Version" type="version">3.5.17.1</property>
+          <property name="library-category-list" type="library-category-list" />
+        </ProjectInformation>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="DebunceBoolIn" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="startTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Discrete signal smoothing</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF input AND NOT memory THEN
+	startTime := TIME();
+END_IF;
+memory := input;
+output := input AND ((TIME() - startTime) &gt; T#100ms);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>aeabac3a-edf8-4a8d-bfc5-f6579f1a4daf</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DebunceBoolInOut" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="startTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Smoothing of discrete signal</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (NOT input AND memory) OR (input AND NOT memory) THEN
+	startTime := TIME();
+END_IF;
+memory := input;
+output := input;
+IF ((TIME() - startTime) &lt; T#100ms) THEN
+	output := NOT input;
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ed6dd414-5d7c-46cd-a3e2-dfead0de1e5d</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DebunceBoolOut" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="startTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Smoothing of discrete signal</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF NOT input AND memory THEN
+	startTime := TIME();
+END_IF;
+memory := input;
+output := input;
+IF NOT input AND ((TIME() - startTime) &lt; T#100ms) THEN
+	output := TRUE;
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1185b75f-604d-4aa1-a1ea-6afa899718f0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DetectEdgeFiltered" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="raise">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rising edge</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fall">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Falling edge</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="fbDio1">
+              <type>
+                <derived name="DebunceBoolInOut" />
+              </type>
+            </variable>
+            <variable name="filteredInput">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Filtered input </xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Detects rising and falling edges with a 100 millisecond filter</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">fbDio1(input := input, output =&gt; filteredInput);
+raise := fall := FALSE;
+IF filteredInput AND NOT memory THEN
+	raise := TRUE;
+ELSIF NOT filteredInput AND memory THEN
+	fall := TRUE;
+END_IF
+memory := filteredInput;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>f0c530e2-1802-4730-a7c1-9e5a02094132</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DoubleClick" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="startTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Double click</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">output := FALSE;
+IF input AND NOT memory THEN
+	IF (TIME() - startTime) &gt; T#100MS AND (TIME() - startTime) &lt; T#800MS THEN
+		output := TRUE;
+	END_IF;
+	startTime := TIME();
+END_IF;
+memory := input;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>d6c942b4-f877-45a8-aaa5-9840654778e6</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FilterNR" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value </xhtml>
+              </documentation>
+            </variable>
+            <variable name="bufferSize">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Buffer size minimum 32 maximum 1000 </xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Reset buffer </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Filtered output value </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="isInitialized">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="buffer">
+              <type>
+                <array>
+                  <dimension lower="1" upper="1000" />
+                  <baseType>
+                    <WORD />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="counter">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="sum">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> This function stores up to 32 values in a buffer and outputs the average value. You can decide how many values to store to get the average number.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// limit the bufferSize
+bufferSize := MIN(MAX(bufferSize, 1000), 32);
+// Initialize
+IF NOT isInitialized OR reset THEN
+	isInitialized := TRUE;
+	FOR counter := 1 TO bufferSize DO
+		buffer[counter] := input;
+	END_FOR;
+	sum := input * bufferSize;
+	output := input;
+	RETURN;
+END_IF;
+
+IF counter &gt;= bufferSize THEN
+    counter := 1;
+ELSE
+    counter := counter + 1;
+END_IF
+
+sum := sum + input - buffer[counter];
+{warning disable C0195}
+output := DWORD_TO_WORD(sum / bufferSize);
+buffer[counter] := input;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>216bb070-e763-45f3-ab22-f6ba447a7047</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FilterTW" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value </xhtml>
+              </documentation>
+            </variable>
+            <variable name="timeInterval">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Time interval</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Filtered output value</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="isInitialized">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="currentTime">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+            <variable name="lastTime">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+            <variable name="tempTime">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Returns the average value over a specified time interval.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">currentTime := TIME_TO_DWORD(TIME());
+// Initialize
+IF NOT isInitialized OR timeInterval = T#0s THEN
+	isInitialized := TRUE;
+	lastTime := currentTime;
+	output := input;
+ELSIF output = input THEN
+	lastTime := currentTime;
+ELSE
+	tempTime := WORD_TO_DWORD(input - output) * (currentTime - lastTime) /
+	TIME_TO_DWORD(timeInterval);
+	IF tempTime &lt;&gt; 0 THEN
+		output := DINT_TO_WORD(WORD_TO_DINT(output) + DWORD_TO_DINT(tempTime));
+		lastTime := currentTime;
+	END_IF;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b0642b57-9ee0-4a1f-a6aa-0d37014eaf0e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="LongClick" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+              </documentation>
+            </variable>
+            <variable name="pressTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Press time </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="startTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Long click</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF input AND NOT memory THEN
+	startTime := TIME();
+END_IF;
+memory := input;
+output := input AND ((TIME() - startTime) &gt; pressTime);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>65c343db-a1af-4db4-a7ad-a65316c3f838</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="PwmClock" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="enable">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start generator</xhtml>
+              </documentation>
+            </variable>
+            <variable name="pulseTime">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="TIME#10ms" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pulse time</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="memory">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="lastTime">
+              <type>
+                <TIME />
+              </type>
+            </variable>
+            <variable name="currentTime">
+              <type>
+                <TIME />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Creates pulses with specified frequency
+ PwmClock(enable := TRUE, pulseTime := T#5ms); Output Q will have one PLC cycle pulse every 5 milliseconds.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">currentTime := TIME();
+IF enable AND NOT memory THEN
+	lastTime := currentTime - pulseTime;
+END_IF;
+memory := enable;
+output := currentTime - lastTime &gt;= pulseTime;
+IF output THEN lastTime := currentTime; END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>69fbfb76-4eb7-4d83-95c1-21404034352c</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="PwmDc" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="frequency">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Frequency, times per second (Hz) </xhtml>
+              </documentation>
+            </variable>
+            <variable name="dutyCycle">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Duty cycle </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="clock">
+              <type>
+                <derived name="PwmClock" />
+              </type>
+            </variable>
+            <variable name="pulseTimer">
+              <type>
+                <derived name="TP" />
+              </type>
+            </variable>
+            <variable name="tempValue">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> creates a PWM signal of a given frequency with a ratio offset. Each PWM cycle can be divided into 2 phases: Ton (on time) and Toff (off time).
+ The ratio is set from 0 to 1. For example, a ratio of 0.5 will divide the time of each PWM cycle into 50% for Ton and 50% for Toff .</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// If the PWM frequency is 0, then we interrupt the execution of the FB
+IF frequency &lt;= 0.0 THEN
+	output := FALSE;
+	RETURN;
+END_IF;
+// Calculate how many milliseconds are required for one PWM cycle
+tempValue := 1000.0 / frequency;
+// Launching the signal generator
+clock(pulseTime := REAL_TO_TIME(tempValue));
+// We create a sustained pulse for the required time
+pulseTimer(in := clock.output, pt := REAL_TO_TIME(tempValue * dutyCycle), Q =&gt; output);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b2c549b4-3ee4-4a60-a429-c5dda1b73017</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="PwmPw" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="frequency">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Frequency (Hz) </xhtml>
+              </documentation>
+            </variable>
+            <variable name="pulseWidth">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Ton phase length </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="output">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="clock">
+              <type>
+                <derived name="PwmClock" />
+              </type>
+            </variable>
+            <variable name="pulseTimer">
+              <type>
+                <derived name="TP" />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Creates PWM signal with specified Ton phase time. For example, we can set F to 100 times per second. This means one PWM cycle will be 10
+ milliseconds. Now if we set PW to T#5ms, we'll get equal time for Ton and Toff phases at 50%.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// If the PWM frequency is 0 or the time of one cycle is less than the time for the Ton phase, then we interrupt the execution of the FB 
+IF frequency &lt;= 0.0 OR (REAL_TO_TIME(1000.0 / frequency) &lt; pulseWidth) THEN
+	output := FALSE;
+	RETURN;
+END_IF;
+// Start the signal generator
+clock(pulseTime := REAL_TO_TIME(1000.0 / frequency));
+// We create a sustained pulse for the required time
+pulseTimer(in := clock.output, PT := pulseWidth, Q =&gt; output);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>453b2034-7959-4690-aff2-788eefb570f6</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SunPositionTimes" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="latitude">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Latitude </xhtml>
+              </documentation>
+            </variable>
+            <variable name="longitude">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Longitude </xhtml>
+              </documentation>
+            </variable>
+            <variable name="currentTime">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current time in UTC </xhtml>
+              </documentation>
+            </variable>
+            <variable name="h">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="-0.83333333333" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Degree above horizon at which sunset or sunrise is considered to occur </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="midday">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Time of solar noon </xhtml>
+              </documentation>
+            </variable>
+            <variable name="sunRise">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sunrise time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="sunSet">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sunset time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="sunDeclination">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sun declination angle at solar noon in degrees </xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="dk">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sun declination angle at noon in radians </xhtml>
+              </documentation>
+            </variable>
+            <variable name="delta">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Time delta from solar noon to sunrise or sunset </xhtml>
+              </documentation>
+            </variable>
+            <variable name="b">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate sunset and sunrise times</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">midday := SunMidday(longitude, currentTime);
+b := latitude * 0.0174532925199433;
+dk := 0.40954 * SIN(0.0172 * (UINT_TO_REAL(DayOfYear(currentTime)) - 79.35));
+sunDeclination := DegreesToRadians(DK);
+IF sunDeclination &gt; 180.0 THEN
+	sunDeclination := sunDeclination - 360.0;
+END_IF;
+sunDeclination := 90.0 - latitude + sunDeclination;
+delta := HourToTime(REAL_TO_INT(ACOS((SIN(RadiansToDegrees(h)) - SIN(b) * SIN(dk)) / (COS(b) * COS(dk))) * 3.819718632));
+sunRise := midday - delta;
+sunSet := midday + delta;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>cce3bab6-f4dc-4237-acc9-88ac792521e0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="IpDecode" pouType="function">
+        <interface>
+          <returnType>
+            <DWORD />
+          </returnType>
+          <inputVars>
+            <variable name="ipStr">
+              <type>
+                <string length="15" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">IP address as string, for example, '192.168.1.2'</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="position">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert IP address to hexadecimal format</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">position := FIND(ipStr, '.');
+WHILE position &gt; 0 DO
+	IpDecode := SHL(IpDecode, 8) OR
+	STRING_TO_DWORD(LEFT(ipStr, position - 1));
+	ipStr := DELETE(ipStr, position, 1);
+	position := FIND(ipStr, '.');
+END_WHILE;
+IpDecode := SHL(IpDecode, 8) OR STRING_TO_DWORD(ipStr);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>5816bee8-262c-48e8-8b13-2203371ffb56</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Ceil" pouType="function">
+        <interface>
+          <returnType>
+            <DINT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rounds the value and returns the nearest integer value that is greater than or equal to X.
+ ceil(3.14) = 4 ceil(-3.14) = -3</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Ceil := REAL_TO_DINT(input);
+
+IF DINT_TO_REAL(Ceil) &lt; input THEN
+	Ceil := Ceil + 1;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>78816cb7-8bcc-46ba-a32f-d1dc6fe2b231</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Exp10" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculates with base 10 to the power.
+ exp10(2) = 100 exp10(3) = 1000</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Exp10 := EXP(input * 2.30258509299405);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e1550196-3879-4553-be95-49fb41feaf24</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ExpN" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+            <variable name="power">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Power</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="sign">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Raising to power X^N. Although there is an EXPT operator in the standard, according to OSCAT, this algorithm works 30 times faster in CoDeSys.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">sign := power.15;
+power := ABS(power);
+IF power.0 THEN ExpN := input; ELSE ExpN := 1.0; END_IF;
+power := SHR(power, 1);
+
+WHILE power &gt; 0 DO
+	input := input * input;
+	IF power.0 THEN ExpN := ExpN * input; END_IF;
+	power := SHR(power, 1);
+END_WHILE;
+
+IF sign THEN ExpN := 1.0 / ExpN; END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>640185c1-fa56-49b9-b0b7-33d16ee89099</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Floor" pouType="function">
+        <interface>
+          <returnType>
+            <DINT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rounds the value and returns the nearest integer value that is less than or equal to X.
+ floor(3.14) = 3 floor(-3.14) = -4</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">FLOOR := REAL_TO_DINT(input);
+IF DINT_TO_REAL(FLOOR) &gt; input THEN
+	FLOOR := FLOOR - 1;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>c7ae1511-9cb2-442c-a360-58c1601418fa</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Fract" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> This function returns the fractional part of a floating point number.
+ fract(3.14) = 0.14</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF ABS(input) &lt; 2.0E9 THEN
+	FRACT := input - DINT_TO_REAL(DTrunc(input));
+ELSE
+	FRACT := 0.0;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2c97c99b-94d7-41a3-88c0-c889ffc9588e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ModR" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Dividend</xhtml>
+              </documentation>
+            </variable>
+            <variable name="divisor">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Divisor</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculates the remainder of division for floating point numbers.
+ modr(5.5, 2.5) = 0.5</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF divisor = 0.0 THEN
+	MODR := 0.0;
+ELSE
+	MODR := input - DINT_TO_REAL(FLOOR(input / divisor)) * divisor;
+END_IF;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>66e67209-b916-448f-8711-f1d9c196c26f</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Round" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Number to process </xhtml>
+              </documentation>
+            </variable>
+            <variable name="precision">
+              <type>
+                <USINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Decimal precision </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rounds a floating point number to the specified number of decimal places.
+ round(12.23456789, 2) = 12.23</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Round := DWORD_TO_REAL(REAL_TO_DWORD(input * Exp10(precision))) / Exp10(precision);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>9884e99a-0864-45b3-bf27-509db44c9794</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="CelciusToFarenheit" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="celsiusTemp">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in Celsius</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert temperature from Celsius to Fahrenheit</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CelciusToFarenheit := celsiusTemp * 1.8 + 32.0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>7f5d796b-74a9-421e-bd0e-9267c5a44f76</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="CelciusToKelvin" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="celsiusTemp">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in Celsius</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars constant="true">
+            <variable name="physT0">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="273.15" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> 0°C in Kelvin</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert temperature from Celsius to Kelvin</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CelciusToKelvin := celsiusTemp + physT0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>0b238ef8-5d8d-4a08-8ea0-8b0731782a91</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DegreesToRadians" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="radians">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in radians</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts radians to degrees.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">DegreesToRadians := ModR(57.29577951308232 * radians, 360.0);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>4981396d-e136-4432-9a71-2aaee415565e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FarenheitToCelcius" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="fahrenheitTemp">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in Fahrenheit</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert temperature from Fahrenheit to Celsius</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">FarenheitToCelcius := (fahrenheitTemp - 32.0) * 0.5555555555555;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e90ecedc-3b3d-421c-9673-f59db8c05ffd</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="KelvinToCelcius" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="kelvinTemp">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in Kelvin</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars constant="true">
+            <variable name="phys_T0">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="273.15" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> 0°C in Kelvin</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert temperature from Kelvin to Celsius</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">KelvinToCelcius := kelvinTemp - phys_T0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e1affddf-5581-4627-8d61-7f2a7f2ca0fa</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="KmhToMs" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="kmhSpeed">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in Km/h</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Speed conversion: km/h to m/s</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">KmhToMs := kmhSpeed * 0.2777777777777;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b26a4465-6ef2-4dc8-b751-aebd4e2f2f56</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="MsToKmh" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="msSpeed">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in m/s</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Speed conversion: m/s to km/h</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">MsToKmh := msSpeed * 3.6;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>21dd1116-5d67-493d-8c77-5b380095d556</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="RadiansToDegrees" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="degrees">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in degrees</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="timeNow">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+            <variable name="timeCount">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="pi">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="3.1415926535897931" />
+              </initialValue>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts degrees to radians</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">RadiansToDegrees := ModR(0.0174532925199433 * degrees, pi*2);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ScaleReal" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value </xhtml>
+              </documentation>
+            </variable>
+            <variable name="inputLow">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input minimum </xhtml>
+              </documentation>
+            </variable>
+            <variable name="inputHigh">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input maximum </xhtml>
+              </documentation>
+            </variable>
+            <variable name="outputLow">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output minimum </xhtml>
+              </documentation>
+            </variable>
+            <variable name="outputHigh">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output maximum </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Linear scaling of floating point number </xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF inputLow = inputHigh THEN
+	ScaleReal := outputLow;
+ELSE
+	ScaleReal := (outputHigh - outputLow) / (inputHigh - inputLow) * (LIMIT(inputLow, input, inputHigh) - inputLow) + outputLow;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>f4fd53a7-9957-4944-8a08-2f548df9fcb7</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="CountChar" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="inputString">
+              <type>
+                <string length="255" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input string </xhtml>
+              </documentation>
+            </variable>
+            <variable name="charToCount">
+              <type>
+                <BYTE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Character to count </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="charPointer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Character pointer </xhtml>
+              </documentation>
+            </variable>
+            <variable name="length">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> String length </xhtml>
+              </documentation>
+            </variable>
+            <variable name="position">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current string position for iteration </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Counts how many specified characters are contained in the string</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">charPointer := ADR(inputString);
+length := LEN(inputString);
+CountChar := 0;
+FOR position := 1 TO length DO
+	IF charPointer^ = charToCount THEN
+		CountChar := CountChar + 1;
+	END_IF;
+	charPointer := charPointer + 1;
+END_FOR;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>18cffb02-7390-4f3a-8476-2dd880b25886</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="RemoveSubString" pouType="function">
+        <interface>
+          <returnType>
+            <string />
+          </returnType>
+          <inputVars>
+            <variable name="inputString">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input string </xhtml>
+              </documentation>
+            </variable>
+            <variable name="substringToRemove">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> What to remove </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="tempString">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> For temporary string </xhtml>
+              </documentation>
+            </variable>
+            <variable name="position">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Position of found character </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Remove character from string</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tempString := inputString;
+REPEAT
+	position := FIND(tempString, substringToRemove);
+	IF position &lt;&gt; 0 THEN
+		tempString := DELETE(tempString, LEN(substringToRemove), position);
+	END_IF;
+UNTIL (position = 0)
+END_REPEAT;
+RemoveSubString := tempString;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e7c3cd13-9368-413f-9843-50ef6ed48f53</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ToUpper" pouType="function">
+        <interface>
+          <returnType>
+            <BYTE />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BYTE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input string</xhtml>
+              </documentation>
+            </variable>
+            <variable name="useExtendedASCII">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> The setup.EXTENDED_ASCII value can be either TRUE or FALSE, depending on the character table supported by the PLC. Usually set to TRUE.</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Change character case from lowercase to uppercase. Works only with ASCII Latin letters.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF input &gt; 96 AND input &lt; 123 THEN
+	ToUpper := input AND 16#DF;
+ELSIF input &gt; 223 AND input &lt;&gt; 247 AND input &lt;&gt; 255 AND useExtendedASCII THEN
+	ToUpper := input AND 16#DF;
+ELSE
+	ToUpper := input;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>de50b872-7179-478a-a52a-b958ef69123e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DateToElements" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input date</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+            <variable name="month">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Month</xhtml>
+              </documentation>
+            </variable>
+            <variable name="day">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Day</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="sTemp">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Extract year, month and day from DATE</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Get date as a string like 'D#2000-01-01'
+sTemp := DATE_TO_STRING(input);
+year := STRING_TO_UINT(MID(sTemp, 3, 4));
+month := STRING_TO_UINT(MID(sTemp, 8, 2));
+day := STRING_TO_UINT(MID(sTemp, 11, 2));
+
+DateToElements := true;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b5fd857c-57e3-429c-980c-20e9ef873113</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DayOfWeek" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input date</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="NumOfDay">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Determine day of week</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">NumOfDay := DATE_TO_DWORD(input) / 86400; 
+NumOfDay := NumOfDay + 3;
+DayOfWeek := DWORD_TO_UINT(NumOfDay MOD 7);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>0f2fb405-5be6-4edf-872f-e9cea8ac3b5e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DayOfYear" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input date in DATE format</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="month">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="day">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate ordinal day of the year</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">DateToElements(input := input, year =&gt; year, month =&gt; month, day =&gt; day);
+
+DayOfYear := DaysTillMonth(year, month) + day;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>6eb00276-4ffa-4774-80ef-fed385777b26</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DaysInYear" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate number of days in year</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF IsLeapYear(year) THEN
+	DaysInYear := 366;
+ELSE
+	DaysInYear := 365;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8f928eba-c868-493d-b5ff-8dfedd52641d</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DaysTillMonth" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+            <variable name="month">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Month</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="days">
+              <type>
+                <array>
+                  <dimension lower="1" upper="12" />
+                  <baseType>
+                    <UINT />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="0" />
+                  </value>
+                  <value>
+                    <simpleValue value="31" />
+                  </value>
+                  <value>
+                    <simpleValue value="59" />
+                  </value>
+                  <value>
+                    <simpleValue value="90" />
+                  </value>
+                  <value>
+                    <simpleValue value="120" />
+                  </value>
+                  <value>
+                    <simpleValue value="151" />
+                  </value>
+                  <value>
+                    <simpleValue value="181" />
+                  </value>
+                  <value>
+                    <simpleValue value="212" />
+                  </value>
+                  <value>
+                    <simpleValue value="243" />
+                  </value>
+                  <value>
+                    <simpleValue value="273" />
+                  </value>
+                  <value>
+                    <simpleValue value="304" />
+                  </value>
+                  <value>
+                    <simpleValue value="334" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Function to determine the number of days from the beginning of the year to the specified month.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">DaysTillMonth := days[month] + BOOL_TO_UINT(month &gt; 2 AND IsLeapYear(year));</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>67d1a212-1ccc-457e-b16d-c7e461443b5b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DaysTillYear" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculates how many days have passed until the specified year</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// We get the number of years that have passed since 1970
+year := year - 1970;
+DaysTillYear := year * 365 + ((year + 1) / 4) - ((year + 69) / 100) + ((year + 369) / 400);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>d2e816a0-7963-4686-bc41-d296bea22188</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="HmsToTime" pouType="function">
+        <interface>
+          <returnType>
+            <TIME />
+          </returnType>
+          <inputVars>
+            <variable name="h">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Hours</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Minutes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sec">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Seconds</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ms">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Milliseconds</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pack hours, minutes, seconds and milliseconds into TIME</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">HmsToTime := DWORD_TO_TIME(((h * 60 + m) * 60 + sec) * 1000 + ms);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>49706012-99ad-4259-bff9-b7c36e2caa74</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="HourToTime" pouType="function">
+        <interface>
+          <returnType>
+            <TIME />
+          </returnType>
+          <inputVars>
+            <variable name="hours">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Hours (0..23)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert hours (as INT) to TIME</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">HourToTime := T#1H * hours;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>93ab5816-722a-4fe0-b453-14d79d5f96e7</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="HourToTod" pouType="function">
+        <interface>
+          <returnType>
+            <TOD />
+          </returnType>
+          <inputVars>
+            <variable name="hours">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Hours (0..23)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert number of hours (INT) to TOD (time of day) value.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">HourToTod := TOD#00:00:00 + T#1h * hours;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ddb9ff52-023f-4749-8919-0e0538454a46</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="IsLeapYear" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="year">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Determine if it's a leap year</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IsLeapYear := year MOD 400 = 0 OR year MOD 4 = 0 AND year MOD 100 &lt;&gt; 0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>5dbd663d-5e78-4699-b583-409a46d62852</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SunMidday" pouType="function">
+        <interface>
+          <returnType>
+            <TOD />
+          </returnType>
+          <inputVars>
+            <variable name="longitude">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Longitude</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dateInUtc">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Date in UTC</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="t">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="offset">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Solar noon time at the specified longitude at the given time</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">t := UINT_TO_REAL(DayOfYear(dateInUtc));
+offset := -0.1752 * SIN(0.033430 * T + 0.5474) - 0.1340 * SIN(0.018234 * T - 0.1939);
+SunMidday := HourToTod(REAL_TO_INT(12.0 - offset - longitude * 0.0666666666666));</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>68fe546b-72e8-4b0d-8ac1-742a18fb08fa</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="TimeToElements" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input time</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="h">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="m">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="sec">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="ms">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="sTemp">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Extract hours, minutes, seconds and milliseconds from TIME</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Now the time is a string like 'TOD#12:12:59'
+sTemp := TOD_TO_STRING(TIME_TO_TOD(input));
+h := STRING_TO_UINT(MID(sTemp, 5, 2));
+m := STRING_TO_UINT(MID(sTemp, 8, 2));
+sec := STRING_TO_UINT(MID(sTemp, 11, 2));
+TimeToElements := TRUE;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>3fe5a2e5-d274-4bd2-9993-e23e460bb606</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="TodBetween" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="CurrTime">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current time </xhtml>
+              </documentation>
+            </variable>
+            <variable name="FromTime">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Lower bound </xhtml>
+              </documentation>
+            </variable>
+            <variable name="ToTime">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Upper bound </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Function to determine if the current time is between two TIME_OF_DAY timestamps.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">TodBetween := (
+	FromTime &gt; ToTime AND (CurrTime &gt; FromTime OR CurrTime &lt; ToTime)
+	) OR (FromTime &lt; ToTime AND (CurrTime &lt; ToTime AND CurrTime &gt; FromTime)
+);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b1ee0c3e-f6b4-4799-81ae-1ae2e0d1a89a</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="TodDiff" pouType="function">
+        <interface>
+          <returnType>
+            <TIME />
+          </returnType>
+          <inputVars>
+            <variable name="FromTime">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Lower bound </xhtml>
+              </documentation>
+            </variable>
+            <variable name="ToTime">
+              <type>
+                <TOD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Upped bound</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate the difference between timestamps</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF ToTime &lt; FromTime THEN
+	TodDiff := T#24H - TOD_TO_TIME(FromTime) + TOD_TO_TIME(ToTime);
+ELSE
+	TodDiff := ToTime - FromTime;
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>50bec7af-ee3d-4afd-9afc-57186a003144</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="WeekOfYear" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="currentDate">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current date </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate the week number in the year</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">WeekOfYear := ((DayOfYear(currentDate) + 6) / 7);
+IF DayOfWeek(currentDate) &lt; DayOfWeek(YearStarts(currentDate)) THEN
+	WeekOfYear := WeekOfYear + 1;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>67cc401c-9be4-42bc-a783-173878e795d0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="YearStarts" pouType="function">
+        <interface>
+          <returnType>
+            <DATE />
+          </returnType>
+          <inputVars>
+            <variable name="currentDate">
+              <type>
+                <DATE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current date</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="str">
+              <type>
+                <string length="25" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Temporary string </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate which day of the week the year starts on</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">str := DATE_TO_STRING(currentDate);
+YearStarts := STRING_TO_DATE(CONCAT(CONCAT('D#', MID(str, 3, 4)), '-01-01'));</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>f574b5de-a869-4215-82cd-296f58bbc331</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="YmdhmsTodt" pouType="function">
+        <interface>
+          <returnType>
+            <DT />
+          </returnType>
+          <inputVars>
+            <variable name="y">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mn">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Month</xhtml>
+              </documentation>
+            </variable>
+            <variable name="d">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Day</xhtml>
+              </documentation>
+            </variable>
+            <variable name="h">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Hour</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Minutes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sec">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Seconds</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ms">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Milliseconds</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="sTemp">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pack year, month, day, hours, minutes, seconds and milliseconds into DT</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">sTemp := CONCAT('DT#', UINT_TO_STRING(y));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(mn));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(d));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(h));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(m));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(sec));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(ms));
+YmdhmsTodt := STRING_TO_DT(sTemp);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e464deaa-a738-4c18-a017-c8f42f407d70</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="YmdToDate" pouType="function">
+        <interface>
+          <returnType>
+            <DATE />
+          </returnType>
+          <inputVars>
+            <variable name="y">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Year</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Month</xhtml>
+              </documentation>
+            </variable>
+            <variable name="d">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Day</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="sTemp">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert year, month and day to DATE format.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">sTemp := CONCAT('D#', UINT_TO_STRING(y));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(m));
+sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, UINT_TO_STRING(d));
+YmdToDate := STRING_TO_DATE(sTemp);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>9484e7aa-ff92-4a2c-99de-34c83c939af8</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BitCount" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DWORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input number</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Counts the number of bits equal to TRUE in DWORD.
+ Example: bit_count(3) = 2 Because 2 bits are 1, and the rest are 0.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">WHILE input &gt; 0 DO
+	IF input.0 THEN
+		BitCount := BitCount + 1;
+	END_IF
+	input := SHR(input, 1);
+END_WHILE;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>26a551da-bc5b-40c3-a89e-69f572829323</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BitLoadB" pouType="function">
+        <interface>
+          <returnType>
+            <BYTE />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BYTE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Byte to perform the operation on </xhtml>
+              </documentation>
+            </variable>
+            <variable name="value">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Value to assign </xhtml>
+              </documentation>
+            </variable>
+            <variable name="position">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Which bit number </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars constant="true">
+            <variable name="dat">
+              <type>
+                <BYTE />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loads one bit value into a byte.
+ bit_load_b(2#0000_0000, 1, 2) = 2#0000_0010</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF value THEN
+	BitLoadB := input OR SHL(dat, position);
+ELSE
+	BitLoadB := input AND (NOT SHL(dat, position));
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1e2df803-f917-4f56-b377-8bdb29e7bcae</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BitOfDword" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DWORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input number</xhtml>
+              </documentation>
+            </variable>
+            <variable name="n">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Bit number </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate the value of a single bit in a DWORD variable.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">BitOfDword := (SHR(input, n) AND 16#00000001) &gt; 0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>858995be-7211-4c94-bcd7-bfdd7b773597</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BitToggleDword" pouType="function">
+        <interface>
+          <returnType>
+            <DWORD />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DWORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+            <variable name="position">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Bit number to invert</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Invert the specified bit in DWORD</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">BitToggleDword := SHL(DWORD#1, position) XOR input;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>7f6f260e-6f32-4728-9857-76f270e6e081</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="CompareReals" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="x">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value X</xhtml>
+              </documentation>
+            </variable>
+            <variable name="y">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value Y</xhtml>
+              </documentation>
+            </variable>
+            <variable name="n">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Number of digits to compare</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="tmp">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Compares 2 input numeric variables to check if their first digits match.
+ Number of digits to compare is passed in parameter N.
+ cmp(3.141516, 3.141517, 6) will return TRUE.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tmp := ABS(x);
+IF tmp &gt; 0.0 THEN
+	tmp := Exp10(DINT_TO_REAL(FLOOR(LOG(tmp))-n+1));
+ELSE
+	tmp := Exp10(tmp);
+END_IF;
+
+CompareReals := ABS(x - y) &lt; tmp;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>aa970595-45f5-4899-b174-d076f52d2dc1</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="DTrunc" pouType="function">
+        <interface>
+          <returnType>
+            <DINT />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Truncates a floating-point number to a DINT integer. 1.5 becomes 1, and -1.5 becomes -1. 
+ This function is necessary because REAL_TO_DINT may return different results on different systems.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">DTrunc := REAL_TO_DINT(input);
+
+IF input &gt; 0.0 THEN
+	IF DINT_TO_REAL(DTrunc) &gt; input THEN
+		DTrunc := DTrunc - 1;
+	END_IF;
+ELSE
+	IF DINT_TO_REAL(DTrunc) &lt; input THEN
+		DTrunc := DTrunc + 1;
+	END_IF;
+END_IF;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2e55f2c0-fb39-4d0c-8d80-c5fb77a9a432</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Even" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Determines if a number is even or not. Returns TRUE if even, FALSE if odd.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Even := NOT input.0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>9dc50582-69c8-4fd8-8f3b-d2bd8f2816fc</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Random" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <inputVars>
+            <variable name="last">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Previous value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="tn">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+            <variable name="tc">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="E">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="2.7182818284590451" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Euler's constant</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculates a pseudo-random number. To generate a number, the function
+ reads the PLC timer and creates a floating-point number from 0 to 1. To
+ use this function more than once in a single PLC cycle, you need to
+ call it with different values of the input parameter last. It's easier to use
+ the previous number to avoid repetitions.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tn := TIME_TO_DWORD(TIME());
+tc := BitCount(tn);
+tn.31 := tn.2;
+tn.30 := tn.5;
+tn.29 := tn.4;
+tn.28 := tn.1;
+tn.27 := tn.0;
+tn.26 := tn.7;
+tn.25 := tn.6;
+tn.24 := tn.3;
+tn := ROL(tn, BitCount(tn)) OR 16#80000001;
+tn := tn MOD 71474513 + INT_TO_DWORD(tc + 77);
+Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
+(E - LIMIT(0.0, last, 1.0))
+);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>7cb56466-a164-4a81-b192-885e8bbef47b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SwapDwordBytes" pouType="function">
+        <interface>
+          <returnType>
+            <DWORD />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <DWORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Swap bytes in DWORD </xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">SwapDwordBytes := (ROR(input, 8) AND 16#FF00FF00) OR (ROL(input, 8) AND 16#00FF00FF);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>bccdf6cd-e09b-4efd-9f7e-4630addfad75</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SwapWordBytes" pouType="function">
+        <interface>
+          <returnType>
+            <WORD />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Swap bytes in WORD </xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">SwapWordBytes := ROL(input, 8);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>4ffee399-140a-4885-98aa-fde9c899cd67</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+      <Libraries>
+        <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8c1463b5-02f2-427d-bd06-9e39d42fcbff</ObjectId>
+          </data>
+        </addData>
+      </Libraries>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="AnjlabCodeBox">
+          <Folder Name="Function Blocks">
+            <Folder Name="Signals">
+              <Object Name="DebunceBoolIn" ObjectId="aeabac3a-edf8-4a8d-bfc5-f6579f1a4daf" />
+              <Object Name="DebunceBoolInOut" ObjectId="ed6dd414-5d7c-46cd-a3e2-dfead0de1e5d" />
+              <Object Name="DebunceBoolOut" ObjectId="1185b75f-604d-4aa1-a1ea-6afa899718f0" />
+              <Object Name="DetectEdgeFiltered" ObjectId="f0c530e2-1802-4730-a7c1-9e5a02094132" />
+              <Object Name="DoubleClick" ObjectId="d6c942b4-f877-45a8-aaa5-9840654778e6" />
+              <Object Name="FilterNR" ObjectId="216bb070-e763-45f3-ab22-f6ba447a7047" />
+              <Object Name="FilterTW" ObjectId="b0642b57-9ee0-4a1f-a6aa-0d37014eaf0e" />
+              <Object Name="LongClick" ObjectId="65c343db-a1af-4db4-a7ad-a65316c3f838" />
+              <Object Name="PwmClock" ObjectId="69fbfb76-4eb7-4d83-95c1-21404034352c" />
+              <Object Name="PwmDc" ObjectId="b2c549b4-3ee4-4a60-a429-c5dda1b73017" />
+              <Object Name="PwmPw" ObjectId="453b2034-7959-4690-aff2-788eefb570f6" />
+            </Folder>
+            <Folder Name="Time">
+              <Object Name="SunPositionTimes" ObjectId="cce3bab6-f4dc-4237-acc9-88ac792521e0" />
+            </Folder>
+          </Folder>
+          <Folder Name="Functions">
+            <Folder Name="Physics">
+              <Object Name="CelciusToFarenheit" ObjectId="7f5d796b-74a9-421e-bd0e-9267c5a44f76" />
+              <Object Name="CelciusToKelvin" ObjectId="0b238ef8-5d8d-4a08-8ea0-8b0731782a91" />
+              <Object Name="DegreesToRadians" ObjectId="4981396d-e136-4432-9a71-2aaee415565e" />
+              <Object Name="FarenheitToCelcius" ObjectId="e90ecedc-3b3d-421c-9673-f59db8c05ffd" />
+              <Object Name="KelvinToCelcius" ObjectId="e1affddf-5581-4627-8d61-7f2a7f2ca0fa" />
+              <Object Name="KmhToMs" ObjectId="b26a4465-6ef2-4dc8-b751-aebd4e2f2f56" />
+              <Object Name="MsToKmh" ObjectId="21dd1116-5d67-493d-8c77-5b380095d556" />
+              <Object Name="RadiansToDegrees" ObjectId="ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e" />
+            </Folder>
+            <Folder Name="Time">
+              <Object Name="DateToElements" ObjectId="b5fd857c-57e3-429c-980c-20e9ef873113" />
+              <Object Name="DayOfWeek" ObjectId="0f2fb405-5be6-4edf-872f-e9cea8ac3b5e" />
+              <Object Name="DayOfYear" ObjectId="6eb00276-4ffa-4774-80ef-fed385777b26" />
+              <Object Name="DaysInYear" ObjectId="8f928eba-c868-493d-b5ff-8dfedd52641d" />
+              <Object Name="DaysTillMonth" ObjectId="67d1a212-1ccc-457e-b16d-c7e461443b5b" />
+              <Object Name="DaysTillYear" ObjectId="d2e816a0-7963-4686-bc41-d296bea22188" />
+              <Object Name="HmsToTime" ObjectId="49706012-99ad-4259-bff9-b7c36e2caa74" />
+              <Object Name="HourToTime" ObjectId="93ab5816-722a-4fe0-b453-14d79d5f96e7" />
+              <Object Name="HourToTod" ObjectId="ddb9ff52-023f-4749-8919-0e0538454a46" />
+              <Object Name="IsLeapYear" ObjectId="5dbd663d-5e78-4699-b583-409a46d62852" />
+              <Object Name="SunMidday" ObjectId="68fe546b-72e8-4b0d-8ac1-742a18fb08fa" />
+              <Object Name="TimeToElements" ObjectId="3fe5a2e5-d274-4bd2-9993-e23e460bb606" />
+              <Object Name="TodBetween" ObjectId="b1ee0c3e-f6b4-4799-81ae-1ae2e0d1a89a" />
+              <Object Name="TodDiff" ObjectId="50bec7af-ee3d-4afd-9afc-57186a003144" />
+              <Object Name="WeekOfYear" ObjectId="67cc401c-9be4-42bc-a783-173878e795d0" />
+              <Object Name="YearStarts" ObjectId="f574b5de-a869-4215-82cd-296f58bbc331" />
+              <Object Name="YmdhmsTodt" ObjectId="e464deaa-a738-4c18-a017-c8f42f407d70" />
+              <Object Name="YmdToDate" ObjectId="9484e7aa-ff92-4a2c-99de-34c83c939af8" />
+            </Folder>
+            <Folder Name="Math">
+              <Object Name="Ceil" ObjectId="78816cb7-8bcc-46ba-a32f-d1dc6fe2b231" />
+              <Object Name="Exp10" ObjectId="e1550196-3879-4553-be95-49fb41feaf24" />
+              <Object Name="ExpN" ObjectId="640185c1-fa56-49b9-b0b7-33d16ee89099" />
+              <Object Name="Floor" ObjectId="c7ae1511-9cb2-442c-a360-58c1601418fa" />
+              <Object Name="Fract" ObjectId="2c97c99b-94d7-41a3-88c0-c889ffc9588e" />
+              <Object Name="ModR" ObjectId="66e67209-b916-448f-8711-f1d9c196c26f" />
+              <Object Name="Round" ObjectId="9884e99a-0864-45b3-bf27-509db44c9794" />
+            </Folder>
+            <Folder Name="Signals">
+              <Object Name="ScaleReal" ObjectId="f4fd53a7-9957-4944-8a08-2f548df9fcb7" />
+            </Folder>
+            <Folder Name="Utils">
+              <Object Name="BitCount" ObjectId="26a551da-bc5b-40c3-a89e-69f572829323" />
+              <Object Name="BitLoadB" ObjectId="1e2df803-f917-4f56-b377-8bdb29e7bcae" />
+              <Object Name="BitOfDword" ObjectId="858995be-7211-4c94-bcd7-bfdd7b773597" />
+              <Object Name="BitToggleDword" ObjectId="7f6f260e-6f32-4728-9857-76f270e6e081" />
+              <Object Name="CompareReals" ObjectId="aa970595-45f5-4899-b174-d076f52d2dc1" />
+              <Object Name="DTrunc" ObjectId="2e55f2c0-fb39-4d0c-8d80-c5fb77a9a432" />
+              <Object Name="Even" ObjectId="9dc50582-69c8-4fd8-8f3b-d2bd8f2816fc" />
+              <Object Name="Random" ObjectId="7cb56466-a164-4a81-b192-885e8bbef47b" />
+              <Object Name="SwapDwordBytes" ObjectId="bccdf6cd-e09b-4efd-9f7e-4630addfad75" />
+              <Object Name="SwapWordBytes" ObjectId="4ffee399-140a-4885-98aa-fde9c899cd67" />
+            </Folder>
+            <Folder Name="Strings">
+              <Object Name="CountChar" ObjectId="18cffb02-7390-4f3a-8476-2dd880b25886" />
+              <Object Name="RemoveSubString" ObjectId="e7c3cd13-9368-413f-9843-50ef6ed48f53" />
+              <Object Name="ToUpper" ObjectId="de50b872-7179-478a-a52a-b958ef69123e" />
+            </Folder>
+            <Folder Name="IO">
+              <Object Name="IpDecode" ObjectId="5816bee8-262c-48e8-8b13-2203371ffb56" />
+            </Folder>
+          </Folder>
+        </Folder>
+        <Object Name="Library Manager" ObjectId="8c1463b5-02f2-427d-bd06-9e39d42fcbff" />
+        <Object Name="Project Information" ObjectId="11c0fc3a-9bcf-4dd8-ac38-efb93363e521" />
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
