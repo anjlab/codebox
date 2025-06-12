@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T14:01:54.6417046" />
+  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T14:05:23.9971404" />
   <contentHeader name="Anjlab Code Box" version="3.5.17.1" modificationDateTime="2025-06-12T13:59:54.8513333" organization="Anjlab" author="Sergey A Glukhov">
     <Comment>Helpful ST blocks and functions</Comment>
     <coordinateInfo>
@@ -3139,6 +3139,16 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
     <configurations />
   </instances>
   <addData>
+    <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+      <Libraries>
+        <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8c1463b5-02f2-427d-bd06-9e39d42fcbff</ObjectId>
+          </data>
+        </addData>
+      </Libraries>
+    </data>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
         <Folder Name="AnjlabCodeBox">
@@ -3225,6 +3235,8 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
             </Folder>
           </Folder>
         </Folder>
+        <Object Name="Library Manager" ObjectId="8c1463b5-02f2-427d-bd06-9e39d42fcbff" />
+        <Object Name="Project Information" ObjectId="11c0fc3a-9bcf-4dd8-ac38-efb93363e521" />
       </ProjectStructure>
     </data>
   </addData>
