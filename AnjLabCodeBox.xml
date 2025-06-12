@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T14:05:23.9971404" />
-  <contentHeader name="Anjlab Code Box" version="3.5.17.1" modificationDateTime="2025-06-12T13:59:54.8513333" organization="Anjlab" author="Sergey A Glukhov">
+  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T14:12:36.8881213" />
+  <contentHeader name="Anjlab Code Box" version="3.5.17.1" modificationDateTime="2025-06-12T14:11:57.4197146" organization="Anjlab" author="Sergey A Glukhov">
     <Comment>Helpful ST blocks and functions</Comment>
     <coordinateInfo>
       <fbd>
@@ -1597,7 +1597,7 @@ END_IF;
             </variable>
           </inputVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> линейное масштабирование числа с плавающей запятой </xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Линейное масштабирование числа с плавающей запятой </xhtml>
           </documentation>
         </interface>
         <body>
