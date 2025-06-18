@@ -1,3 +1,5 @@
 ._AnjlabCodeBox.xml
-*.library
 *.compiled-library
+*.opt
+*.~u
+*.precompilecache
