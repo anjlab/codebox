@@ -53,11 +53,11 @@ After installation, you can call any of the functions or function blocks from yo
 ```iecst
 // Example: Debounce a digital input
 VAR
-    fbDebounce: DebunceBoolIn;
+    fbDebounce: DebounceBool;
     bFilteredOutput: BOOL;
 END_VAR
 
-fbDebounce(input := %IX0.0, output => bFilteredOutput);
+fbDebounce(input := %IX0.0, onDelay := T#100ms, offDelay := T#100ms, output => bFilteredOutput);
 ```
 
 ## Requirements
