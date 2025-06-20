@@ -7,28 +7,33 @@ AnjLab Code Box is a comprehensive PLC utility library designed for use with CoD
 ## Features
 
 ### Signal Processing
-- **Debounce Functions**: Filter noisy digital signals (`DebunceBoolIn`, `DebunceBoolInOut`, `DebunceBoolOut`)
+
+- **Debounce Functions**: Filter noisy digital signals (`DebunceBool`)
 - **Edge Detection**: Detect rising and falling edges with filtering (`DetectEdgeFiltered`)
 - **Click Detection**: Detect double clicks and long presses (`DoubleClick`, `LongClick`)
 - **PWM Generation**: Create PWM signals with configurable frequency and duty cycle (`PwmClock`, `PwmDc`, `PwmPw`)
 - **Filtering**: Noise reduction filters for analog signals (`FilterNR`, `FilterTW`)
 
 ### Time and Date Utilities
+
 - **Sun Position**: Calculate sunrise, sunset, and solar noon times (`SunPositionTimes`, `SunMidday`)
 - **Date/Time Conversion**: Extensive functions for date and time manipulation (`DateToElements`, `DayOfWeek`, `DayOfYear`, etc.)
 - **Time Calculations**: Difference between timestamps, week of year calculations, etc.
 
 ### Mathematical Functions
+
 - **Rounding**: Ceil, floor, round, and truncate operations
 - **Exponents**: Efficient power calculations (`ExpN`, `Exp10`)
 - **Scaling**: Linear scaling of values (`ScaleReal`)
 - **Random Numbers**: Pseudo-random number generation (`Random`)
 
 ### String Manipulation
-- **Character Operations**: Count characters, remove substrings, case conversion
+
+- **Character Operations**: Count characters, remove substrings, case conversion, type conversion
 - **String Processing**: Various string utility functions
 
 ### Data Conversion
+
 - **Bit Manipulation**: Count bits, toggle bits, load bits into bytes
 - **Byte Swapping**: Swap bytes in words and dwords
 - **IP Address Decoding**: Convert IP string to DWORD format

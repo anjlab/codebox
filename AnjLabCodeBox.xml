@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-12T17:21:43.5135664" />
-  <contentHeader name="Anjlab Code Box" version="3.5.17.1" modificationDateTime="2025-06-12T17:21:30.0135268" organization="Anjlab" author="Sergey A Glukhov">
+  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-20T14:16:31.7776024" />
+  <contentHeader name="Anjlab Code Box" version="3.5.17.2" modificationDateTime="2025-06-20T14:16:17.3483429" organization="Anjlab" author="Sergey A Glukhov">
     <Comment>Comprehensive PLC Utility Library for CoDeSys</Comment>
     <coordinateInfo>
       <fbd>
@@ -32,7 +32,7 @@
           <property name="SourceCode" type="string">https://github.com/anjlab/codebox</property>
           <property name="SourceLibrary" type="boolean">false</property>
           <property name="Title" type="string">Anjlab Code Box</property>
-          <property name="Version" type="version">3.5.17.1</property>
+          <property name="Version" type="version">3.5.17.2</property>
           <property name="library-category-list" type="library-category-list" />
         </ProjectInformation>
       </data>
@@ -41,253 +41,190 @@
   <types>
     <dataTypes />
     <pous>
-      <pou name="DebunceBoolIn" pouType="functionBlock">
+      <pou name="DebounceBool" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="input">
+            <variable name="inputSignal">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Raw input signal (may contain noise)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="onDelay">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="TIME#30ms" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Delay time for rising edge (TON)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="offDelay">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="TIME#30ms" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Delay time for falling edge (TOF)</xhtml>
               </documentation>
             </variable>
           </inputVars>
           <outputVars>
-            <variable name="output">
+            <variable name="debouncedOutput">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Filtered (debounced) output</xhtml>
               </documentation>
             </variable>
           </outputVars>
           <localVars>
-            <variable name="startTime">
+            <variable name="tonTimer">
               <type>
-                <TIME />
+                <derived name="TON" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> On-delay timer (for rising edge)</xhtml>
               </documentation>
             </variable>
-            <variable name="memory">
+            <variable name="tofTimer">
               <type>
-                <BOOL />
+                <derived name="TON" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory </xhtml>
-              </documentation>
-            </variable>
-          </localVars>
-          <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Discrete signal smoothing</xhtml>
-          </documentation>
-        </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF input AND NOT memory THEN
-	startTime := TIME();
-END_IF;
-memory := input;
-output := input AND ((TIME() - startTime) &gt; T#100ms);</xhtml>
-          </ST>
-        </body>
-        <addData>
-          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-            <ObjectId>aeabac3a-edf8-4a8d-bfc5-f6579f1a4daf</ObjectId>
-          </data>
-        </addData>
-      </pou>
-      <pou name="DebunceBoolInOut" pouType="functionBlock">
-        <interface>
-          <inputVars>
-            <variable name="input">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
-              </documentation>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="output">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
-              </documentation>
-            </variable>
-          </outputVars>
-          <localVars>
-            <variable name="startTime">
-              <type>
-                <TIME />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time </xhtml>
-              </documentation>
-            </variable>
-            <variable name="memory">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Off-delay timer (for falling edge)</xhtml>
               </documentation>
             </variable>
           </localVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Smoothing of discrete signal</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> This function block implements a digital input debouncer using both TON and TOF timers. It filters signal noise on both rising and falling edges.</xhtml>
           </documentation>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (NOT input AND memory) OR (input AND NOT memory) THEN
-	startTime := TIME();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Rising edge handling — start TON if input is TRUE and output is still FALSE
+tonTimer(IN := inputSignal AND NOT debouncedOutput, PT := onDelay);
+
+// Falling edge handling — start TOF if input is FALSE and output is still TRUE
+tofTimer(IN := NOT inputSignal AND debouncedOutput, PT := offDelay);
+
+// Update the output based on timers
+IF tonTimer.IN AND tonTimer.Q THEN
+    debouncedOutput := TRUE;
+ELSIF tofTimer.IN AND tofTimer.Q THEN
+    debouncedOutput := FALSE;
 END_IF;
-memory := input;
-output := input;
-IF ((TIME() - startTime) &lt; T#100ms) THEN
-	output := NOT input;
-END_IF</xhtml>
+</xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-            <ObjectId>ed6dd414-5d7c-46cd-a3e2-dfead0de1e5d</ObjectId>
-          </data>
-        </addData>
-      </pou>
-      <pou name="DebunceBoolOut" pouType="functionBlock">
-        <interface>
-          <inputVars>
-            <variable name="input">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal </xhtml>
-              </documentation>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="output">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Output signal </xhtml>
-              </documentation>
-            </variable>
-          </outputVars>
-          <localVars>
-            <variable name="startTime">
-              <type>
-                <TIME />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start time</xhtml>
-              </documentation>
-            </variable>
-            <variable name="memory">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Signal memory</xhtml>
-              </documentation>
-            </variable>
-          </localVars>
-          <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Smoothing of discrete signal</xhtml>
-          </documentation>
-        </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF NOT input AND memory THEN
-	startTime := TIME();
-END_IF;
-memory := input;
-output := input;
-IF NOT input AND ((TIME() - startTime) &lt; T#100ms) THEN
-	output := TRUE;
-END_IF</xhtml>
-          </ST>
-        </body>
-        <addData>
-          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-            <ObjectId>1185b75f-604d-4aa1-a1ea-6afa899718f0</ObjectId>
+            <ObjectId>2d459604-36a3-45db-9800-9a6a611bcd75</ObjectId>
           </data>
         </addData>
       </pou>
       <pou name="DetectEdgeFiltered" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="input">
+            <variable name="inputSignal">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input signal</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Raw input signal (may contain noise)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="onDelay">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="TIME#30ms" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Debounce time for rising edge</xhtml>
+              </documentation>
+            </variable>
+            <variable name="offDelay">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="TIME#30ms" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Debounce time for falling edge</xhtml>
               </documentation>
             </variable>
           </inputVars>
           <outputVars>
-            <variable name="raise">
+            <variable name="debouncedOutput">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rising edge</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Debounced output signal</xhtml>
               </documentation>
             </variable>
-            <variable name="fall">
+            <variable name="risingEdge">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Falling edge</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> One-cycle pulse on rising edge</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fallingEdge">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> One-cycle pulse on falling edge</xhtml>
               </documentation>
             </variable>
           </outputVars>
           <localVars>
-            <variable name="fbDio1">
+            <variable name="fbDebounceBool">
               <type>
-                <derived name="DebunceBoolInOut" />
+                <derived name="DebounceBool" />
               </type>
             </variable>
-            <variable name="filteredInput">
+            <variable name="prevDebounced">
               <type>
                 <BOOL />
               </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Filtered input </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Previous state of debounced output</xhtml>
               </documentation>
-            </variable>
-            <variable name="memory">
-              <type>
-                <BOOL />
-              </type>
             </variable>
           </localVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Detects rising and falling edges with a 100 millisecond filter</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Uses DebounceBool internally to filter input signal, then detects rising and falling edges on filtered signal.</xhtml>
           </documentation>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">fbDio1(input := input, output =&gt; filteredInput);
-raise := fall := FALSE;
-IF filteredInput AND NOT memory THEN
-	raise := TRUE;
-ELSIF NOT filteredInput AND memory THEN
-	fall := TRUE;
-END_IF
-memory := filteredInput;</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">fbDebounceBool(
+    inputSignal := inputSignal,
+    onDelay := onDelay,
+    offDelay := offDelay,
+	debouncedOutput =&gt; debouncedOutput
+);
+
+// Edge detection on filtered output
+risingEdge := NOT prevDebounced AND debouncedOutput;
+fallingEdge := prevDebounced AND NOT debouncedOutput;
+prevDebounced := debouncedOutput;</xhtml>
           </ST>
         </body>
         <addData>
@@ -1611,6 +1548,447 @@ END_IF;</xhtml>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>f4fd53a7-9957-4944-8a08-2f548df9fcb7</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ByteToString" pouType="function">
+        <interface>
+          <returnType>
+            <string length="1" />
+          </returnType>
+          <inputVars>
+            <variable name="input">
+              <type>
+                <BYTE />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input byte </xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars constant="true">
+            <variable name="physT0">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="273.15" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> 0°C in Kelvin</xhtml>
+              </documentation>
+            </variable>
+            <variable name="asciiMap">
+              <type>
+                <array>
+                  <dimension lower="0" upper="127" />
+                  <baseType>
+                    <string length="1" />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="' '" />
+                  </value>
+                  <value>
+                    <simpleValue value="'!'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'&quot;'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'#'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'$$'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'%'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'&amp;'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'$''" />
+                  </value>
+                  <value>
+                    <simpleValue value="'('" />
+                  </value>
+                  <value>
+                    <simpleValue value="')'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'*'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'+'" />
+                  </value>
+                  <value>
+                    <simpleValue value="','" />
+                  </value>
+                  <value>
+                    <simpleValue value="'-'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'.'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'/'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'0'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'1'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'2'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'3'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'4'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'5'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'6'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'7'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'8'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'9'" />
+                  </value>
+                  <value>
+                    <simpleValue value="':'" />
+                  </value>
+                  <value>
+                    <simpleValue value="';'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'&lt;'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'='" />
+                  </value>
+                  <value>
+                    <simpleValue value="'&gt;'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'@'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'A'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'B'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'C'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'D'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'E'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'F'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'G'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'H'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'I'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'J'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'K'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'L'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'M'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'N'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'O'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'P'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Q'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'R'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'S'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'T'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'U'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'V'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'W'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'X'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Y'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Z'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'['" />
+                  </value>
+                  <value>
+                    <simpleValue value="'\'" />
+                  </value>
+                  <value>
+                    <simpleValue value="']'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'^'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'_'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'`'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'a'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'b'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'c'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'d'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'e'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'f'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'g'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'h'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'i'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'j'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'k'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'l'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'m'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'n'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'o'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'p'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'q'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'r'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'s'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'t'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'u'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'v'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'w'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'x'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'y'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'z'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'{'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'|'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'}'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'~'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'?'" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Convert single byte to single char string for use cases when CHR is not available (yes, it is possible)</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">ByteToString := asciiMap[input];</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>41b7c2b8-3d46-475d-9e89-51e83fe1b7f1</ObjectId>
           </data>
         </addData>
       </pou>
@@ -3153,17 +3531,15 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
         <Folder Name="AnjlabCodeBox">
           <Folder Name="Function Blocks">
             <Folder Name="Signals">
-              <Object Name="DebunceBoolIn" ObjectId="aeabac3a-edf8-4a8d-bfc5-f6579f1a4daf" />
-              <Object Name="DebunceBoolInOut" ObjectId="ed6dd414-5d7c-46cd-a3e2-dfead0de1e5d" />
-              <Object Name="DebunceBoolOut" ObjectId="1185b75f-604d-4aa1-a1ea-6afa899718f0" />
-              <Object Name="DetectEdgeFiltered" ObjectId="f0c530e2-1802-4730-a7c1-9e5a02094132" />
-              <Object Name="DoubleClick" ObjectId="d6c942b4-f877-45a8-aaa5-9840654778e6" />
               <Object Name="FilterNR" ObjectId="216bb070-e763-45f3-ab22-f6ba447a7047" />
               <Object Name="FilterTW" ObjectId="b0642b57-9ee0-4a1f-a6aa-0d37014eaf0e" />
-              <Object Name="LongClick" ObjectId="65c343db-a1af-4db4-a7ad-a65316c3f838" />
+              <Object Name="DoubleClick" ObjectId="d6c942b4-f877-45a8-aaa5-9840654778e6" />
+              <Object Name="DetectEdgeFiltered" ObjectId="f0c530e2-1802-4730-a7c1-9e5a02094132" />
               <Object Name="PwmClock" ObjectId="69fbfb76-4eb7-4d83-95c1-21404034352c" />
               <Object Name="PwmDc" ObjectId="b2c549b4-3ee4-4a60-a429-c5dda1b73017" />
               <Object Name="PwmPw" ObjectId="453b2034-7959-4690-aff2-788eefb570f6" />
+              <Object Name="LongClick" ObjectId="65c343db-a1af-4db4-a7ad-a65316c3f838" />
+              <Object Name="DebounceBool" ObjectId="2d459604-36a3-45db-9800-9a6a611bcd75" />
             </Folder>
             <Folder Name="Time">
               <Object Name="SunPositionTimes" ObjectId="cce3bab6-f4dc-4237-acc9-88ac792521e0" />
@@ -3171,63 +3547,64 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
           </Folder>
           <Folder Name="Functions">
             <Folder Name="Physics">
+              <Object Name="DegreesToRadians" ObjectId="4981396d-e136-4432-9a71-2aaee415565e" />
               <Object Name="CelciusToFarenheit" ObjectId="7f5d796b-74a9-421e-bd0e-9267c5a44f76" />
               <Object Name="CelciusToKelvin" ObjectId="0b238ef8-5d8d-4a08-8ea0-8b0731782a91" />
-              <Object Name="DegreesToRadians" ObjectId="4981396d-e136-4432-9a71-2aaee415565e" />
               <Object Name="FarenheitToCelcius" ObjectId="e90ecedc-3b3d-421c-9673-f59db8c05ffd" />
-              <Object Name="KelvinToCelcius" ObjectId="e1affddf-5581-4627-8d61-7f2a7f2ca0fa" />
               <Object Name="KmhToMs" ObjectId="b26a4465-6ef2-4dc8-b751-aebd4e2f2f56" />
+              <Object Name="KelvinToCelcius" ObjectId="e1affddf-5581-4627-8d61-7f2a7f2ca0fa" />
               <Object Name="MsToKmh" ObjectId="21dd1116-5d67-493d-8c77-5b380095d556" />
               <Object Name="RadiansToDegrees" ObjectId="ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e" />
             </Folder>
             <Folder Name="Time">
-              <Object Name="DateToElements" ObjectId="b5fd857c-57e3-429c-980c-20e9ef873113" />
-              <Object Name="DayOfWeek" ObjectId="0f2fb405-5be6-4edf-872f-e9cea8ac3b5e" />
-              <Object Name="DayOfYear" ObjectId="6eb00276-4ffa-4774-80ef-fed385777b26" />
-              <Object Name="DaysInYear" ObjectId="8f928eba-c868-493d-b5ff-8dfedd52641d" />
               <Object Name="DaysTillMonth" ObjectId="67d1a212-1ccc-457e-b16d-c7e461443b5b" />
-              <Object Name="DaysTillYear" ObjectId="d2e816a0-7963-4686-bc41-d296bea22188" />
-              <Object Name="HmsToTime" ObjectId="49706012-99ad-4259-bff9-b7c36e2caa74" />
-              <Object Name="HourToTime" ObjectId="93ab5816-722a-4fe0-b453-14d79d5f96e7" />
-              <Object Name="HourToTod" ObjectId="ddb9ff52-023f-4749-8919-0e0538454a46" />
-              <Object Name="IsLeapYear" ObjectId="5dbd663d-5e78-4699-b583-409a46d62852" />
-              <Object Name="SunMidday" ObjectId="68fe546b-72e8-4b0d-8ac1-742a18fb08fa" />
+              <Object Name="DaysInYear" ObjectId="8f928eba-c868-493d-b5ff-8dfedd52641d" />
               <Object Name="TimeToElements" ObjectId="3fe5a2e5-d274-4bd2-9993-e23e460bb606" />
               <Object Name="TodBetween" ObjectId="b1ee0c3e-f6b4-4799-81ae-1ae2e0d1a89a" />
               <Object Name="TodDiff" ObjectId="50bec7af-ee3d-4afd-9afc-57186a003144" />
               <Object Name="WeekOfYear" ObjectId="67cc401c-9be4-42bc-a783-173878e795d0" />
               <Object Name="YearStarts" ObjectId="f574b5de-a869-4215-82cd-296f58bbc331" />
               <Object Name="YmdhmsTodt" ObjectId="e464deaa-a738-4c18-a017-c8f42f407d70" />
+              <Object Name="HmsToTime" ObjectId="49706012-99ad-4259-bff9-b7c36e2caa74" />
+              <Object Name="HourToTime" ObjectId="93ab5816-722a-4fe0-b453-14d79d5f96e7" />
+              <Object Name="HourToTod" ObjectId="ddb9ff52-023f-4749-8919-0e0538454a46" />
+              <Object Name="DateToElements" ObjectId="b5fd857c-57e3-429c-980c-20e9ef873113" />
+              <Object Name="DayOfWeek" ObjectId="0f2fb405-5be6-4edf-872f-e9cea8ac3b5e" />
+              <Object Name="DayOfYear" ObjectId="6eb00276-4ffa-4774-80ef-fed385777b26" />
+              <Object Name="IsLeapYear" ObjectId="5dbd663d-5e78-4699-b583-409a46d62852" />
+              <Object Name="SunMidday" ObjectId="68fe546b-72e8-4b0d-8ac1-742a18fb08fa" />
               <Object Name="YmdToDate" ObjectId="9484e7aa-ff92-4a2c-99de-34c83c939af8" />
+              <Object Name="DaysTillYear" ObjectId="d2e816a0-7963-4686-bc41-d296bea22188" />
             </Folder>
             <Folder Name="Math">
+              <Object Name="ExpN" ObjectId="640185c1-fa56-49b9-b0b7-33d16ee89099" />
               <Object Name="Ceil" ObjectId="78816cb7-8bcc-46ba-a32f-d1dc6fe2b231" />
               <Object Name="Exp10" ObjectId="e1550196-3879-4553-be95-49fb41feaf24" />
-              <Object Name="ExpN" ObjectId="640185c1-fa56-49b9-b0b7-33d16ee89099" />
               <Object Name="Floor" ObjectId="c7ae1511-9cb2-442c-a360-58c1601418fa" />
               <Object Name="Fract" ObjectId="2c97c99b-94d7-41a3-88c0-c889ffc9588e" />
-              <Object Name="ModR" ObjectId="66e67209-b916-448f-8711-f1d9c196c26f" />
               <Object Name="Round" ObjectId="9884e99a-0864-45b3-bf27-509db44c9794" />
+              <Object Name="ModR" ObjectId="66e67209-b916-448f-8711-f1d9c196c26f" />
             </Folder>
             <Folder Name="Signals">
               <Object Name="ScaleReal" ObjectId="f4fd53a7-9957-4944-8a08-2f548df9fcb7" />
             </Folder>
             <Folder Name="Utils">
-              <Object Name="BitCount" ObjectId="26a551da-bc5b-40c3-a89e-69f572829323" />
-              <Object Name="BitLoadB" ObjectId="1e2df803-f917-4f56-b377-8bdb29e7bcae" />
               <Object Name="BitOfDword" ObjectId="858995be-7211-4c94-bcd7-bfdd7b773597" />
-              <Object Name="BitToggleDword" ObjectId="7f6f260e-6f32-4728-9857-76f270e6e081" />
               <Object Name="CompareReals" ObjectId="aa970595-45f5-4899-b174-d076f52d2dc1" />
               <Object Name="DTrunc" ObjectId="2e55f2c0-fb39-4d0c-8d80-c5fb77a9a432" />
               <Object Name="Even" ObjectId="9dc50582-69c8-4fd8-8f3b-d2bd8f2816fc" />
-              <Object Name="Random" ObjectId="7cb56466-a164-4a81-b192-885e8bbef47b" />
-              <Object Name="SwapDwordBytes" ObjectId="bccdf6cd-e09b-4efd-9f7e-4630addfad75" />
+              <Object Name="BitCount" ObjectId="26a551da-bc5b-40c3-a89e-69f572829323" />
+              <Object Name="BitLoadB" ObjectId="1e2df803-f917-4f56-b377-8bdb29e7bcae" />
+              <Object Name="BitToggleDword" ObjectId="7f6f260e-6f32-4728-9857-76f270e6e081" />
               <Object Name="SwapWordBytes" ObjectId="4ffee399-140a-4885-98aa-fde9c899cd67" />
+              <Object Name="SwapDwordBytes" ObjectId="bccdf6cd-e09b-4efd-9f7e-4630addfad75" />
+              <Object Name="Random" ObjectId="7cb56466-a164-4a81-b192-885e8bbef47b" />
             </Folder>
             <Folder Name="Strings">
               <Object Name="CountChar" ObjectId="18cffb02-7390-4f3a-8476-2dd880b25886" />
               <Object Name="RemoveSubString" ObjectId="e7c3cd13-9368-413f-9843-50ef6ed48f53" />
               <Object Name="ToUpper" ObjectId="de50b872-7179-478a-a52a-b958ef69123e" />
+              <Object Name="ByteToString" ObjectId="41b7c2b8-3d46-475d-9e89-51e83fe1b7f1" />
             </Folder>
             <Folder Name="IO">
               <Object Name="IpDecode" ObjectId="5816bee8-262c-48e8-8b13-2203371ffb56" />
