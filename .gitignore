@@ -3,3 +3,4 @@
 *.opt
 *.~u
 *.precompilecache
+*.Device.Sim.*
