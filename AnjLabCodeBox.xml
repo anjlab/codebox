@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-06-20T14:16:31.7776024" />
-  <contentHeader name="Anjlab Code Box" version="3.5.17.2" modificationDateTime="2025-06-20T14:16:17.3483429" organization="Anjlab" author="Sergey A Glukhov">
+  <fileHeader companyName="Prosoft-Systems Ltd." productName="Astra.IDE" productVersion="Astra.IDE_V1.7.2.1" creationDateTime="2025-07-18T09:58:00.1972721" />
+  <contentHeader name="Anjlab Code Box" version="3.5.17.3" modificationDateTime="2025-07-18T09:54:53.7808919" organization="Anjlab" author="Sergey A Glukhov">
     <Comment>Comprehensive PLC Utility Library for CoDeSys</Comment>
     <coordinateInfo>
       <fbd>
@@ -32,7 +32,7 @@
           <property name="SourceCode" type="string">https://github.com/anjlab/codebox</property>
           <property name="SourceLibrary" type="boolean">false</property>
           <property name="Title" type="string">Anjlab Code Box</property>
-          <property name="Version" type="version">3.5.17.2</property>
+          <property name="Version" type="version">3.5.17.3</property>
           <property name="library-category-list" type="library-category-list" />
         </ProjectInformation>
       </data>
@@ -379,7 +379,7 @@ IF NOT isInitialized OR reset THEN
 	RETURN;
 END_IF;
 
-IF counter &gt;= bufferSize THEN
+IF counter &gt; bufferSize THEN
     counter := 1;
 ELSE
     counter := counter + 1;
@@ -862,12 +862,12 @@ pulseTimer(in := clock.output, PT := pulseWidth, Q =&gt; output);</xhtml>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">midday := SunMidday(longitude, currentTime);
 b := latitude * 0.0174532925199433;
 dk := 0.40954 * SIN(0.0172 * (UINT_TO_REAL(DayOfYear(currentTime)) - 79.35));
-sunDeclination := DegreesToRadians(DK);
+sunDeclination := RadiansToDegrees(DK);
 IF sunDeclination &gt; 180.0 THEN
 	sunDeclination := sunDeclination - 360.0;
 END_IF;
 sunDeclination := 90.0 - latitude + sunDeclination;
-delta := HourToTime(REAL_TO_INT(ACOS((SIN(RadiansToDegrees(h)) - SIN(b) * SIN(dk)) / (COS(b) * COS(dk))) * 3.819718632));
+delta := HourToTime(REAL_TO_INT(ACOS((SIN(DegreesToRadians(h)) - SIN(b) * SIN(dk)) / (COS(b) * COS(dk))) * 3.819718632));
 sunRise := midday - delta;
 sunSet := midday + delta;</xhtml>
           </ST>
@@ -1101,9 +1101,9 @@ END_IF;</xhtml>
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF ABS(input) &lt; 2.0E9 THEN
-	FRACT := input - DINT_TO_REAL(DTrunc(input));
+	Fract := ABS(input - DINT_TO_REAL(DTrunc(input)));
 ELSE
-	FRACT := 0.0;
+	Fract := 0.0;
 END_IF;</xhtml>
           </ST>
         </body>
@@ -1187,7 +1187,7 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">Round := DWORD_TO_REAL(REAL_TO_DWORD(input * Exp10(precision))) / Exp10(precision);
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Round := DINT_TO_REAL(REAL_TO_DINT(input * Exp10(precision))) / Exp10(precision);
 </xhtml>
           </ST>
         </body>
@@ -1276,27 +1276,49 @@ END_IF;
             <REAL />
           </returnType>
           <inputVars>
-            <variable name="radians">
+            <variable name="degrees">
               <type>
                 <REAL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in radians</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in degrees</xhtml>
               </documentation>
             </variable>
           </inputVars>
+          <localVars>
+            <variable name="timeNow">
+              <type>
+                <DWORD />
+              </type>
+            </variable>
+            <variable name="timeCount">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="pi">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="3.1415926535897931" />
+              </initialValue>
+            </variable>
+          </localVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts radians to degrees.</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts degrees to radians</xhtml>
           </documentation>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">DegreesToRadians := ModR(57.29577951308232 * radians, 360.0);</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">DegreesToRadians := ModR(0.0174532925199433 * degrees, pi*2);</xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-            <ObjectId>4981396d-e136-4432-9a71-2aaee415565e</ObjectId>
+            <ObjectId>ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e</ObjectId>
           </data>
         </addData>
       </pou>
@@ -1439,49 +1461,27 @@ END_IF;
             <REAL />
           </returnType>
           <inputVars>
-            <variable name="degrees">
+            <variable name="radians">
               <type>
                 <REAL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in degrees</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Input value in radians</xhtml>
               </documentation>
             </variable>
           </inputVars>
-          <localVars>
-            <variable name="timeNow">
-              <type>
-                <DWORD />
-              </type>
-            </variable>
-            <variable name="timeCount">
-              <type>
-                <INT />
-              </type>
-            </variable>
-          </localVars>
-          <localVars constant="true">
-            <variable name="pi">
-              <type>
-                <REAL />
-              </type>
-              <initialValue>
-                <simpleValue value="3.1415926535897931" />
-              </initialValue>
-            </variable>
-          </localVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts degrees to radians</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Converts radians to degrees.</xhtml>
           </documentation>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">RadiansToDegrees := ModR(0.0174532925199433 * degrees, pi*2);</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">RadiansToDegrees := ModR(57.29577951308232 * radians, 360.0);</xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-            <ObjectId>ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e</ObjectId>
+            <ObjectId>4981396d-e136-4432-9a71-2aaee415565e</ObjectId>
           </data>
         </addData>
       </pou>
@@ -2232,9 +2232,9 @@ END_IF;</xhtml>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">// Get date as a string like 'D#2000-01-01'
 sTemp := DATE_TO_STRING(input);
-year := STRING_TO_UINT(MID(sTemp, 3, 4));
-month := STRING_TO_UINT(MID(sTemp, 8, 2));
-day := STRING_TO_UINT(MID(sTemp, 11, 2));
+year := STRING_TO_UINT(MID(sTemp, 4, 3));
+month := STRING_TO_UINT(MID(sTemp, 2, 8));
+day := STRING_TO_UINT(MID(sTemp, 2, 11));
 
 DateToElements := true;</xhtml>
           </ST>
@@ -2594,7 +2594,7 @@ DaysTillYear := year * 365 + ((year + 1) / 4) - ((year + 69) / 100) + ((year + 3
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">HourToTod := TOD#00:00:00 + T#1h * hours;</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">HourToTod := TOD#00:00:00 + T#1h * (hours MOD 24);</xhtml>
           </ST>
         </body>
         <addData>
@@ -2735,11 +2735,12 @@ SunMidday := HourToTod(REAL_TO_INT(12.0 - offset - longitude * 0.0666666666666))
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Now the time is a string like 'TOD#12:12:59'
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Now the time is a string like 'TOD#12:12:59.001'
 sTemp := TOD_TO_STRING(TIME_TO_TOD(input));
-h := STRING_TO_UINT(MID(sTemp, 5, 2));
-m := STRING_TO_UINT(MID(sTemp, 8, 2));
-sec := STRING_TO_UINT(MID(sTemp, 11, 2));
+h := STRING_TO_UINT(MID(sTemp, 2, 5));
+m := STRING_TO_UINT(MID(sTemp, 2, 8));
+sec := STRING_TO_UINT(MID(sTemp, 2, 11));
+ms := STRING_TO_UINT(MID(sTemp, 3, 14));
 TimeToElements := TRUE;</xhtml>
           </ST>
         </body>
@@ -2755,7 +2756,7 @@ TimeToElements := TRUE;</xhtml>
             <BOOL />
           </returnType>
           <inputVars>
-            <variable name="CurrTime">
+            <variable name="currentTOD">
               <type>
                 <TOD />
               </type>
@@ -2763,7 +2764,7 @@ TimeToElements := TRUE;</xhtml>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current time </xhtml>
               </documentation>
             </variable>
-            <variable name="FromTime">
+            <variable name="fromTOD">
               <type>
                 <TOD />
               </type>
@@ -2771,7 +2772,7 @@ TimeToElements := TRUE;</xhtml>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"> Lower bound </xhtml>
               </documentation>
             </variable>
-            <variable name="ToTime">
+            <variable name="toTOD">
               <type>
                 <TOD />
               </type>
@@ -2787,8 +2788,8 @@ TimeToElements := TRUE;</xhtml>
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">TodBetween := (
-	FromTime &gt; ToTime AND (CurrTime &gt; FromTime OR CurrTime &lt; ToTime)
-	) OR (FromTime &lt; ToTime AND (CurrTime &lt; ToTime AND CurrTime &gt; FromTime)
+	fromTOD &gt; toTOD AND (currentTOD &gt; fromTOD OR currentTOD &lt; toTOD)
+	) OR (fromTOD &lt; toTOD AND (currentTOD &lt; toTOD AND currentTOD &gt; fromTOD)
 );
 </xhtml>
           </ST>
@@ -2805,7 +2806,7 @@ TimeToElements := TRUE;</xhtml>
             <TIME />
           </returnType>
           <inputVars>
-            <variable name="FromTime">
+            <variable name="fromTOD">
               <type>
                 <TOD />
               </type>
@@ -2813,7 +2814,7 @@ TimeToElements := TRUE;</xhtml>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"> Lower bound </xhtml>
               </documentation>
             </variable>
-            <variable name="ToTime">
+            <variable name="toTOD">
               <type>
                 <TOD />
               </type>
@@ -2823,15 +2824,15 @@ TimeToElements := TRUE;</xhtml>
             </variable>
           </inputVars>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate the difference between timestamps</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Calculate the difference between TODs in TIME</xhtml>
           </documentation>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF ToTime &lt; FromTime THEN
-	TodDiff := T#24H - TOD_TO_TIME(FromTime) + TOD_TO_TIME(ToTime);
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF toTOD &lt; fromTOD THEN
+	TodDiff := T#24H - TOD_TO_TIME(fromTOD) + TOD_TO_TIME(toTOD);
 ELSE
-	TodDiff := ToTime - FromTime;
+	TodDiff := toTOD - fromTOD;
 END_IF</xhtml>
           </ST>
         </body>
@@ -2862,7 +2863,7 @@ END_IF</xhtml>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">WeekOfYear := ((DayOfYear(currentDate) + 6) / 7);
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">WeekOfYear := (DayOfYear(currentDate) + 6) / 7;
 IF DayOfWeek(currentDate) &lt; DayOfWeek(YearStarts(currentDate)) THEN
 	WeekOfYear := WeekOfYear + 1;
 END_IF;</xhtml>
@@ -2906,7 +2907,7 @@ END_IF;</xhtml>
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">str := DATE_TO_STRING(currentDate);
-YearStarts := STRING_TO_DATE(CONCAT(CONCAT('D#', MID(str, 3, 4)), '-01-01'));</xhtml>
+YearStarts := STRING_TO_DATE(CONCAT(CONCAT('D#', MID(str, 4, 3)), '-01-01'));</xhtml>
           </ST>
         </body>
         <addData>
@@ -2915,7 +2916,7 @@ YearStarts := STRING_TO_DATE(CONCAT(CONCAT('D#', MID(str, 3, 4)), '-01-01'));</x
           </data>
         </addData>
       </pou>
-      <pou name="YmdhmsTodt" pouType="function">
+      <pou name="YmdhmsToDt" pouType="function">
         <interface>
           <returnType>
             <DT />
@@ -2998,11 +2999,11 @@ sTemp := CONCAT(sTemp, '-');
 sTemp := CONCAT(sTemp, UINT_TO_STRING(d));
 sTemp := CONCAT(sTemp, '-');
 sTemp := CONCAT(sTemp, UINT_TO_STRING(h));
-sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, ':');
 sTemp := CONCAT(sTemp, UINT_TO_STRING(m));
-sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, ':');
 sTemp := CONCAT(sTemp, UINT_TO_STRING(sec));
-sTemp := CONCAT(sTemp, '-');
+sTemp := CONCAT(sTemp, '.');
 sTemp := CONCAT(sTemp, UINT_TO_STRING(ms));
 YmdhmsTodt := STRING_TO_DT(sTemp);</xhtml>
           </ST>
@@ -3134,7 +3135,7 @@ END_WHILE;</xhtml>
                 <INT />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Which bit number </xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Which bit number (zero-padded)</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -3150,7 +3151,7 @@ END_WHILE;</xhtml>
           </localVars>
           <documentation>
             <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loads one bit value into a byte.
- bit_load_b(2#0000_0000, 1, 2) = 2#0000_0010</xhtml>
+ bit_load_b(2#0000_0000, 1, 3) = 2#0000_1000</xhtml>
           </documentation>
         </interface>
         <body>
@@ -3547,14 +3548,14 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
           </Folder>
           <Folder Name="Functions">
             <Folder Name="Physics">
-              <Object Name="DegreesToRadians" ObjectId="4981396d-e136-4432-9a71-2aaee415565e" />
+              <Object Name="RadiansToDegrees" ObjectId="4981396d-e136-4432-9a71-2aaee415565e" />
               <Object Name="CelciusToFarenheit" ObjectId="7f5d796b-74a9-421e-bd0e-9267c5a44f76" />
               <Object Name="CelciusToKelvin" ObjectId="0b238ef8-5d8d-4a08-8ea0-8b0731782a91" />
               <Object Name="FarenheitToCelcius" ObjectId="e90ecedc-3b3d-421c-9673-f59db8c05ffd" />
               <Object Name="KmhToMs" ObjectId="b26a4465-6ef2-4dc8-b751-aebd4e2f2f56" />
               <Object Name="KelvinToCelcius" ObjectId="e1affddf-5581-4627-8d61-7f2a7f2ca0fa" />
               <Object Name="MsToKmh" ObjectId="21dd1116-5d67-493d-8c77-5b380095d556" />
-              <Object Name="RadiansToDegrees" ObjectId="ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e" />
+              <Object Name="DegreesToRadians" ObjectId="ed9aeab3-29c3-4d5f-9dc8-19fc9c76a64e" />
             </Folder>
             <Folder Name="Time">
               <Object Name="DaysTillMonth" ObjectId="67d1a212-1ccc-457e-b16d-c7e461443b5b" />
@@ -3564,7 +3565,7 @@ Random := FRACT(DWORD_TO_REAL(tn) / 10000000.0 *
               <Object Name="TodDiff" ObjectId="50bec7af-ee3d-4afd-9afc-57186a003144" />
               <Object Name="WeekOfYear" ObjectId="67cc401c-9be4-42bc-a783-173878e795d0" />
               <Object Name="YearStarts" ObjectId="f574b5de-a869-4215-82cd-296f58bbc331" />
-              <Object Name="YmdhmsTodt" ObjectId="e464deaa-a738-4c18-a017-c8f42f407d70" />
+              <Object Name="YmdhmsToDt" ObjectId="e464deaa-a738-4c18-a017-c8f42f407d70" />
               <Object Name="HmsToTime" ObjectId="49706012-99ad-4259-bff9-b7c36e2caa74" />
               <Object Name="HourToTime" ObjectId="93ab5816-722a-4fe0-b453-14d79d5f96e7" />
               <Object Name="HourToTod" ObjectId="ddb9ff52-023f-4749-8919-0e0538454a46" />
